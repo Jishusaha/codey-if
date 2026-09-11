@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import { Logo } from '@/components/logo'
 
 export function Cta({ isAuthed }: { isAuthed: boolean }) {
@@ -12,14 +12,15 @@ export function Cta({ isAuthed }: { isAuthed: boolean }) {
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-pretty text-muted-foreground">
           Join students who are building and shipping their work with
-          BuildSpace. Free to start — no credit card required.
+          SmartDEploy. Free to start — no credit card required.
         </p>
-        <Button asChild size="lg" className="mt-8 gap-2">
-          <Link href={isAuthed ? '/dashboard' : '/auth/sign-up'}>
-            Get started
-            <ArrowRight className="size-4" />
-          </Link>
-        </Button>
+        <Link
+          className={buttonVariants({ size: 'lg', className: 'mt-8 gap-2' })}
+          href={isAuthed ? '/dashboard' : '/auth/sign-up'}
+        >
+          Get started
+          <ArrowRight className="size-4" />
+        </Link>
       </div>
     </section>
   )
@@ -31,7 +32,7 @@ export function SiteFooter() {
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row sm:px-6">
         <Logo />
         <p className="text-sm text-muted-foreground">
-          Built for students who ship. © {new Date().getFullYear()} BuildSpace.
+          Built for students who ship. © {new Date().getFullYear()} SmartDEploy.
         </p>
       </div>
     </footer>

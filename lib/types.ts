@@ -25,3 +25,16 @@ export interface ChatMessage {
   content: string
   createdAt: number
 }
+
+export interface FileMap {
+  [filePath: string]: {
+    code: string;
+    active?: boolean;
+    hidden?: boolean;
+  };
+}
+
+export interface GenerationResponse {
+  files: { path: string; content: string }[];
+  explanation: string;
+}

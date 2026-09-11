@@ -20,7 +20,22 @@ import { useState } from 'react'
 // whether an email is registered. Errors the user can act on are passed through,
 // and anything unexpected is reported as such instead of as a wrong password.
 function loginErrorMessage(error: unknown): string {
-  const { code, status } = (error ?? {}) as { code?: string; status?: number }
+  const { code, status, message } = (error ?? {}) as {
+    code?: string
+    status?: number
+    message?: string
+  }
+
+  if (message?.includes('Supabase is not configured')) {
+    return message
+  }
+
+  if (
+    message?.toLowerCase().includes('email address') &&
+    message.toLowerCase().includes('invalid')
+  ) {
+    return 'Please use a real email address — example and test domains are not supported.'
+  }
 
   if (code === 'email_not_confirmed') {
     return 'Please confirm your email address — check your inbox for the link.'

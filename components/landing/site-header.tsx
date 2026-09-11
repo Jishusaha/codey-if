@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Logo } from '@/components/logo'
-import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 
 export function SiteHeader({ isAuthed }: { isAuthed: boolean }) {
   return (
@@ -20,17 +20,20 @@ export function SiteHeader({ isAuthed }: { isAuthed: boolean }) {
         </nav>
         <div className="flex items-center gap-2">
           {isAuthed ? (
-            <Button asChild>
-              <Link href="/dashboard">Open dashboard</Link>
-            </Button>
+            <Link className={buttonVariants()} href="/dashboard">
+              Open dashboard
+            </Link>
           ) : (
             <>
-              <Button asChild variant="ghost">
-                <Link href="/auth/login">Log in</Link>
-              </Button>
-              <Button asChild>
-                <Link href="/auth/sign-up">Get started</Link>
-              </Button>
+              <Link
+                className={buttonVariants({ variant: 'ghost' })}
+                href="/auth/login"
+              >
+                Log in
+              </Link>
+              <Link className={buttonVariants()} href="/auth/sign-up">
+                Get started
+              </Link>
             </>
           )}
         </div>

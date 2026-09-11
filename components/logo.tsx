@@ -20,7 +20,7 @@ export function Logo({
       <span className="flex size-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
         <Boxes className="size-4" />
       </span>
-      <span className="text-lg">BuildSpace</span>
+      <span className="text-lg">SmartDEploy</span>
     </Link>
   )
 }

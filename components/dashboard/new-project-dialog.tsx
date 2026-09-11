@@ -46,11 +46,9 @@ export function NewProjectDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="gap-2">
-          <Plus className="size-4" />
-          New project
-        </Button>
+      <DialogTrigger render={<Button className="gap-2" />}>
+        <Plus className="size-4" />
+        New project
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

@@ -11,7 +11,7 @@ export function MockIde() {
           <span className="size-3 rounded-full bg-success/70" />
         </div>
         <span className="ml-3 font-mono text-xs text-muted-foreground">
-          portfolio — BuildSpace
+          portfolio — SmartDEploy
         </span>
       </div>
 

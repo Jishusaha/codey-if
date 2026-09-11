@@ -33,14 +33,16 @@ export function DashboardHeader({ email }: { email: string }) {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Logo href="/dashboard" />
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-2 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring">
-              <Avatar className="size-8">
-                <AvatarFallback className="bg-accent text-accent-foreground text-xs">
-                  {email.slice(0, 2).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-            </button>
+          <DropdownMenuTrigger
+            render={
+              <button className="flex items-center gap-2 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring" />
+            }
+          >
+            <Avatar className="size-8">
+              <AvatarFallback className="bg-accent text-accent-foreground text-xs">
+                {email.slice(0, 2).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel className="truncate font-normal text-muted-foreground">

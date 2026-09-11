@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'BuildSpace — Build, run & deploy your portfolio',
+  title: 'SmartDEploy — Build, run & deploy your portfolio',
   description:
     'An all-in-one AI web IDE for students. Describe your idea, edit code with a real editor, preview it live, and deploy to a real URL in one click.',
   generator: 'v0.app',

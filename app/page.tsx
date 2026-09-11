@@ -4,12 +4,12 @@ import { Hero } from '@/components/landing/hero'
 import { Features } from '@/components/landing/features'
 import { HowItWorks } from '@/components/landing/how-it-works'
 import { Cta, SiteFooter } from '@/components/landing/cta'
+import { isSupabaseConfigured } from '@/lib/supabase/config'
 
 export default async function HomePage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = isSupabaseConfigured()
+    ? (await createClient()).auth.getUser().then(({ data }) => data.user)
+    : null
   const isAuthed = Boolean(user)
 
   return (

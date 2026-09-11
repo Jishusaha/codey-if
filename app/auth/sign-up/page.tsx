@@ -20,7 +20,22 @@ import { useState } from 'react'
 // fallback stays generic. Validation failures describe the user's own input and
 // are not an enumeration oracle, so surface them.
 function signUpErrorMessage(error: unknown): string {
-  const { code, status } = (error ?? {}) as { code?: string; status?: number }
+  const { code, status, message } = (error ?? {}) as {
+    code?: string
+    status?: number
+    message?: string
+  }
+
+  if (message?.includes('Supabase is not configured')) {
+    return message
+  }
+
+  if (
+    message?.toLowerCase().includes('email address') &&
+    message.toLowerCase().includes('invalid')
+  ) {
+    return 'Please use a real email address — example and test domains are not supported.'
+  }
 
   if (code === 'weak_password') {
     return 'Please choose a stronger password.'

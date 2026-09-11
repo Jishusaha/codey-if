@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import {
   Card,
   CardContent,
@@ -5,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 
 export default function Page() {
   return (
@@ -14,15 +16,19 @@ export default function Page() {
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl">
-                Thank you for signing up!
+                You&apos;re all set!
               </CardTitle>
-              <CardDescription>Check your email to confirm</CardDescription>
+              <CardDescription>
+                Your account is ready to use.
+              </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
               <p className="text-sm text-muted-foreground">
-                You&apos;ve successfully signed up. Please check your email to
-                confirm your account before signing in.
+                Sign in to start building and deploying your portfolio.
               </p>
+              <Link href="/auth/login" className="block">
+                <Button className="w-full">Go to login</Button>
+              </Link>
             </CardContent>
           </Card>
         </div>
