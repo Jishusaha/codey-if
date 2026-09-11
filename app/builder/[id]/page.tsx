@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { Workbench } from '@/components/editor/workbench'
 import { DashboardHeader } from '@/components/dashboard/dashboard-header'
 import { createClient } from '@/lib/supabase/server'
+import { getProjectForUser, isMissingProjectsTableError } from '@/lib/project-store'
 
 export default async function BuilderPage({
   params,
@@ -18,21 +19,39 @@ export default async function BuilderPage({
     redirect('/auth/login')
   }
 
-  const { data: project, error } = await supabase
-    .from('projects')
-    .select('*')
-    .eq('id', id)
-    .eq('user_id', user.id)
-    .single()
+  let project: any = null
 
-  if (error || !project) {
+  try {
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .single()
+
+    if (!error) project = data
+  } catch (caught) {
+    if (!isMissingProjectsTableError(caught)) {
+      redirect('/dashboard')
+    }
+  }
+
+  if (!project) {
+    project = await getProjectForUser(id, user.id)
+  }
+
+  if (!project) {
     redirect('/dashboard')
   }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <DashboardHeader email={user.email ?? 'user@example.com'} />
-      <Workbench initialFiles={project.files ?? {}} />
+      <Workbench
+        projectId={id}
+        projectName={project.name}
+        initialFiles={project.files ?? {}}
+      />
     </div>
   )
 }

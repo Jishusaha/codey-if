@@ -2,10 +2,16 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { files, projectName = "portfolio-site" } = await req.json();
+    const { files, projectId, projectName = "portfolio-site" } = await req.json();
 
     if (!files || typeof files !== "object") {
       throw new Error("Missing files payload");
+    }
+
+    if (!process.env.VERCEL_API_TOKEN) {
+      throw new Error(
+        "Missing VERCEL_API_TOKEN. Add your Vercel token to .env.local to enable deployment."
+      );
     }
 
     const formattedFiles = Object.entries(files).map(([file, data]) => {
@@ -20,6 +26,34 @@ export async function POST(req: Request) {
       };
     });
 
+    const fileNames = Object.keys(files).map((file) => file.replace(/^\//, ""));
+    const htmlFile = fileNames.includes("public/index.html")
+      ? files["/public/index.html"]
+      : files["/index.html"];
+
+    if (htmlFile && !fileNames.includes("index.html")) {
+      formattedFiles.push({
+        file: "index.html",
+        data: Buffer.from(htmlFile, "utf8").toString("base64"),
+        encoding: "base64",
+      });
+    }
+
+    if (!fileNames.includes("package.json")) {
+      formattedFiles.push({
+        file: "package.json",
+        data: Buffer.from(
+          JSON.stringify({
+            scripts: { build: "vite build" },
+            dependencies: { "@vitejs/plugin-react": "latest", vite: "latest", react: "latest", "react-dom": "latest" },
+            devDependencies: {},
+          }),
+          "utf8",
+        ).toString("base64"),
+        encoding: "base64",
+      });
+    }
+
     const response = await fetch("https://api.vercel.com/v13/deployments", {
       method: "POST",
       headers: {
@@ -27,7 +61,7 @@ export async function POST(req: Request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: projectName,
+        name: String(projectName).toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 50) || "portfolio-site",
         files: formattedFiles,
         projectSettings: {
           framework: "vite",
@@ -41,9 +75,23 @@ export async function POST(req: Request) {
       throw new Error(deploymentData.error?.message || "Failed to deploy");
     }
 
+    const url = `https://${deploymentData.url}`;
+
+    if (typeof projectId === "string") {
+      await fetch(new URL(`/api/projects/${projectId}`, req.url), {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", cookie: req.headers.get("cookie") || "" },
+        body: JSON.stringify({
+          deploy_url: url,
+          deploy_status: "ready",
+          deployment_id: deploymentData.id,
+        }),
+      });
+    }
+
     return NextResponse.json({
       success: true,
-      url: `https://${deploymentData.url}`,
+      url,
     });
   } catch (error: any) {
     return NextResponse.json(

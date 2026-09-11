@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { DashboardHeader } from '@/components/dashboard/dashboard-header'
 import { NewProjectDialog } from '@/components/dashboard/new-project-dialog'
 import { createClient } from '@/lib/supabase/server'
+import { isMissingProjectsTableError, listProjectsForUser } from '@/lib/project-store'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -13,11 +14,31 @@ export default async function DashboardPage() {
     redirect('/auth/login')
   }
 
-  const { data: projects, error } = await supabase
-    .from('projects')
-    .select('id, name, description, template, deploy_url, updated_at, created_at')
-    .eq('user_id', user.id)
-    .order('updated_at', { ascending: false })
+  let projects: any[] = []
+  let error: { message: string } | null = null
+
+  try {
+    const response = await supabase
+      .from('projects')
+      .select('id, name, description, template, deploy_url, updated_at, created_at')
+      .eq('user_id', user.id)
+      .order('updated_at', { ascending: false })
+
+    projects = response.data ?? []
+    error = response.error ? { message: response.error.message } : null
+  } catch (caught) {
+    if (isMissingProjectsTableError(caught)) {
+      projects = await listProjectsForUser(user.id)
+      error = null
+    } else {
+      error = { message: 'Unable to load projects' }
+    }
+  }
+
+  if (error && isMissingProjectsTableError(error)) {
+    projects = await listProjectsForUser(user.id)
+    error = null
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">

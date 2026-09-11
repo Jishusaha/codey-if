@@ -8,9 +8,10 @@
     "start": "next start"
   },
   "dependencies": {
+    "@ai-sdk/google": "^4.0.68",
     "@ai-sdk/openai": "^4.0.65",
+    "@babel/standalone": "^8.0.5",
     "@base-ui/react": "^1.5.0",
-    "@codesandbox/sandpack-react": "^2.20.0",
     "@monaco-editor/react": "^4.7.0",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.116.0",
