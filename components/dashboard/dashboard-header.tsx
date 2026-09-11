@@ -1,0 +1,59 @@
+'use client'
+
+import { useRouter } from 'next/navigation'
+import { LogOut } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
+import { Logo } from '@/components/logo'
+import { Button } from '@/components/ui/button'
+import {
+  Avatar,
+  AvatarFallback,
+} from '@/components/ui/avatar'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+
+export function DashboardHeader({ email }: { email: string }) {
+  const router = useRouter()
+
+  const signOut = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/')
+    router.refresh()
+  }
+
+  return (
+    <header className="border-b border-border">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+        <Logo href="/dashboard" />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="flex items-center gap-2 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring">
+              <Avatar className="size-8">
+                <AvatarFallback className="bg-accent text-accent-foreground text-xs">
+                  {email.slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel className="truncate font-normal text-muted-foreground">
+              {email}
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={signOut}>
+              <LogOut className="mr-2 size-4" />
+              Sign out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </header>
+  )
+}
